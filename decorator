@@ -1,0 +1,73 @@
+// Decorator 
+// Abstract Component class 
+abstract class Pizza {
+  constructor(){}
+  abstract getDescription():string
+  abstract cost():number;
+}
+
+
+class ThinCrustPizza extends Pizza {
+  
+  getDescription(){
+    return 'Thin Crust Pizza';
+  }
+
+  cost(){
+    return 5;
+  }
+}
+
+
+class ThickCrustPizza extends Pizza {
+  
+  getDescription(){
+    return 'THICK Crust Pizza';
+  }
+
+  cost(){
+    return 6;
+  }
+}
+
+// Abstract Decorator class that compatible with base class
+abstract class ToppingsDecorator extends Pizza {
+  pizza: Pizza; // it takes an instance and adds new behavoir to it
+
+  constructor(pizza:Pizza){
+     super();
+     this.pizza = pizza;
+  }
+}
+
+// create concrete decorators 
+
+class OlivesDecorator extends ToppingsDecorator {
+ getDescription(){
+  return this.pizza.getDescription() + ', with Olives'; // adding new behvior to passed instance 
+ }
+
+ cost(){
+  return this.pizza.cost() + 0.5;
+ }
+}
+
+
+class CheeseDecorator extends ToppingsDecorator {
+ getDescription(){
+  return this.pizza.getDescription() + ', with more Cheese';
+ }
+
+ cost(){
+  return this.pizza.cost() + 1;
+ }
+}
+
+// create base pizza and decorate it with two decorators
+
+let pizza1 = new ThickCrustPizza();
+pizza1 = new OlivesDecorator(pizza1);
+pizza1 = new CheeseDecorator(pizza1);
+
+console.log('Description: ', pizza1.getDescription());
+console.log('Cost: ', pizza1.cost());
