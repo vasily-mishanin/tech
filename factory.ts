@@ -1,4 +1,4 @@
-// Facttory pattern
+// Factory pattern
 // We have Calendar, ZoneFactory and Zone 
 
 abstract class Zone {
