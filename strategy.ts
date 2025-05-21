@@ -2,7 +2,7 @@ abstract class  PhoneCameraApp {
   abstract edit(): void
   protected sharingBehavior!:SharingStrategy 
   constructor(sb:SharingStrategy){
-    this.setSharingBehavior(sb);
+    this.setSharingBehavior(sb); // (4) - abstract class (Context) has a setter of Strategy Behavior
   }
   private setSharingBehavior(sb:SharingStrategy){
     this.sharingBehavior = sb;
@@ -17,57 +17,78 @@ abstract class  PhoneCameraApp {
 
 class BasicCameraApp extends PhoneCameraApp {
   constructor(){
-    super(new ShareViaEmail());
+    super(new ShareViaEmail(new Email())); // (5) - email -> concrete strategy behavior -> set  'sharingBehavior'
   }
   edit(){
     console.log('Basic_CameraApp - edit')
   }
+
   share(){
     console.log('BasicCameraApp');
-    this.sharingBehavior.share();
+    this.sharingBehavior.share(); // (6) - this.email.sendEmail();
   }
 }
 
 class CameraPlusApp extends PhoneCameraApp {
   constructor(){
-    super(new ShareViaSocialMedia());
+    super(new ShareViaSocialMedia(new SocialMedia())); // (5')
   }
-   edit(){
+
+  edit(){
     console.log('Camera_Plus_App - edit')
   }
 
   share(){
     console.log('CameraPlusApp');
-    this.sharingBehavior.share();
+    this.sharingBehavior.share(); // (6')
   }
 }
 
+//// STRATEGY!
 interface SharingStrategy {
-  share():void;
+  share():void; // (1) - define strategy interface
 }  
 
+class Email {
+  sendEmail(){
+     console.log('Share => Send Email');
+  }
+}
+
+class SocialMedia {
+  publishPost(){
+      console.log('Share => Post in Social Media');
+  }
+}
+
 class ShareViaEmail implements SharingStrategy{
-  share(){
-    console.log('Share => Send Email');
+  constructor(private email:Email){
+    this.email = email;
+  }
+  share(){ // (2) impelement specific case of the straregy behavior
+   this.email.sendEmail();
   }
 }
 
 class ShareViaSocialMedia implements SharingStrategy {
-  share(){
-    console.log('Share => Post in Social Media');
+  constructor(private account:SocialMedia){
+    this.account = account;
+  }
+  share(){ // (3) impelement specific case of the straregy behavior
+   this.account.publishPost();
   }
 }
 
-const basicApp = new BasicCameraApp();
-const plusApp = new CameraPlusApp();
+const basicApp = new BasicCameraApp(); // Client 1
+const plusApp = new CameraPlusApp(); // Client 2
 
 basicApp.take();
 basicApp.save();
 basicApp.edit();
-basicApp.share();
+basicApp.share(); // strategy
 
 
 plusApp.take();
 plusApp.save();
 plusApp.edit();
-plusApp.share();
+plusApp.share(); // strategy
